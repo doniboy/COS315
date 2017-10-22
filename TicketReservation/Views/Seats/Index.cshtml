@@ -1,51 +1,68 @@
-@model IEnumerable<TicketReservation.Models.Seat>
+@model IEnumerable<TicketReservation.Models.Journey>
 
 @{
-    ViewData["Title"] = "View";
+    ViewData["Title"] = "Seat Reservation";
 }
 
-<h2>View</h2>
-
+<h2>Choose a Journey</h2>
 
 <table class="table">
     <thead>
         <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Direction)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Number)
-                </th>
             <th>
-                @Html.DisplayNameFor(model => model.Journey)
+                @Html.DisplayNameFor(model => model.From)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.User)
+                @Html.DisplayNameFor(model => model.To)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsActive)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalSeatsLeftDirection)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalSeatsRightDirection)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Direction)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Number)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Journey.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.User.Id)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+
+            string selectedRow = "";
+            if (item.Id == (int?)ViewData["JourneyID"])
+            {
+                selectedRow = "success";
+            }
+            <tr class="@selectedRow">
+                <td>
+                    @Html.DisplayFor(modelItem => item.From)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.To)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsActive)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalSeatsLeftDirection)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalSeatsRightDirection)
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Index" asp-route-id="@item.Id">Buy</a> 
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

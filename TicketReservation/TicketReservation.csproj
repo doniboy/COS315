@@ -6,6 +6,13 @@
     <UserSecretsId>aspnet-TicketReservation-EF0BD855-F6B6-4489-8516-D8DF23315585</UserSecretsId>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="Views\Journey\**" />
+    <Content Remove="Views\Journey\**" />
+    <EmbeddedResource Remove="Views\Journey\**" />
+    <None Remove="Views\Journey\**" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0" />
@@ -37,7 +44,6 @@
 
   <ItemGroup>
     <Folder Include="Data\Migrations\" />
-    <Folder Include="Views\Journey\" />
   </ItemGroup>
 
 </Project>

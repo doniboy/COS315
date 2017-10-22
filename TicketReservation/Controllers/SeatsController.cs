@@ -19,12 +19,18 @@ namespace TicketReservation.Controllers
 
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Seat.ToListAsync());
+            return View(await _context.Journey.ToListAsync());
         }
-
-        public async Task<IActionResult> Buy()
+        /*
+        public async Task<IActionResult> Index(int? journeyId)
         {
-            return View(await _context.Seat.ToListAsync());
-        }
+            var journeyToUpdate = _context.Journey.SingleOrDefaultAsync(j => j.Id == journeyId); ;
+
+           
+
+            
+
+            return View(await _context.Journey.ToListAsync());
+        } */
     }
 }
