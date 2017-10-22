@@ -1,14 +1,16 @@
 @model TicketReservation.Models.Seat
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Buy";
 }
 
 <h2>Create</h2>
-
-<form asp-action="Create">
+<p>
+    <a asp-action="Buy">Buy Ticket</a>
+</p>
+<form asp-action="Buy">
     <div class="form-horizontal">
-        <h4>Seat</h4>
+        <h4>Journeys</h4>
         <hr />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="form-group">

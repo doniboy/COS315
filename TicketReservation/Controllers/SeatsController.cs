@@ -22,7 +22,7 @@ namespace TicketReservation.Controllers
             return View(await _context.Seat.ToListAsync());
         }
 
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> Buy()
         {
             return View(await _context.Seat.ToListAsync());
         }
