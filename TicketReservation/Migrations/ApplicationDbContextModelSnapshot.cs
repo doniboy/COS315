@@ -137,6 +137,10 @@ namespace TicketReservation.Migrations
 
                     b.Property<bool>("EmailConfirmed");
 
+                    b.Property<string>("FirstName");
+
+                    b.Property<string>("LastName");
+
                     b.Property<bool>("LockoutEnabled");
 
                     b.Property<DateTimeOffset?>("LockoutEnd");
@@ -172,41 +176,92 @@ namespace TicketReservation.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("TicketReservation.Models.Journey", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("Date");
+
+                    b.Property<string>("From");
+
+                    b.Property<string>("IsActive");
+
+                    b.Property<string>("To");
+
+                    b.Property<int>("TotalSeatsLeftDirection");
+
+                    b.Property<int>("TotalSeatsRightDirection");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Journey");
+                });
+
+            modelBuilder.Entity("TicketReservation.Models.Seat", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Direction");
+
+                    b.Property<int>("JourneyId");
+
+                    b.Property<string>("Number");
+
+                    b.Property<string>("UserId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("JourneyId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Seat");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRole")
                         .WithMany("Claims")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("RoleId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserClaim<string>", b =>
                 {
                     b.HasOne("TicketReservation.Models.ApplicationUser")
                         .WithMany("Claims")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserLogin<string>", b =>
                 {
                     b.HasOne("TicketReservation.Models.ApplicationUser")
                         .WithMany("Logins")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserRole<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRole")
                         .WithMany("Users")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("RoleId");
 
                     b.HasOne("TicketReservation.Models.ApplicationUser")
                         .WithMany("Roles")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("TicketReservation.Models.Seat", b =>
+                {
+                    b.HasOne("TicketReservation.Models.Journey", "Journey")
+                        .WithMany()
+                        .HasForeignKey("JourneyId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("TicketReservation.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
                 });
         }
     }
