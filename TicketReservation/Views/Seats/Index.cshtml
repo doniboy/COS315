@@ -1,0 +1,68 @@
+@model IEnumerable<TicketReservation.Models.Journey>
+
+@{
+    ViewData["Title"] = "Seat Reservation";
+}
+
+<h2>Choose a Journey</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.From)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.To)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsActive)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalSeatsLeftDirection)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalSeatsRightDirection)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+
+            string selectedRow = "";
+            if (item.Id == (int?)ViewData["JourneyID"])
+            {
+                selectedRow = "success";
+            }
+            <tr class="@selectedRow">
+                <td>
+                    @Html.DisplayFor(modelItem => item.From)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.To)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsActive)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalSeatsLeftDirection)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalSeatsRightDirection)
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Index" asp-route-id="@item.Id">Buy</a> 
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

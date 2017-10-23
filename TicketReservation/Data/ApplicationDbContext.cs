@@ -15,6 +15,11 @@ namespace TicketReservation.Data
             : base(options)
         {
         }
+        public DbSet<ApplicationUser> Users { get; set; }
+
+        public DbSet<Seat> Seat { get; set; }
+
+        public DbSet<Journey> Journey { get; set; }
 
         public DbSet<ApplicationUser> Users { get; set; }
         public DbSet<Seat> Seat { get; set; }

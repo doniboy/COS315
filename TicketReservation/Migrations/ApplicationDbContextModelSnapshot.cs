@@ -137,10 +137,6 @@ namespace TicketReservation.Migrations
 
                     b.Property<bool>("EmailConfirmed");
 
-                    b.Property<string>("FirstName");
-
-                    b.Property<string>("LastName");
-
                     b.Property<bool>("LockoutEnabled");
 
                     b.Property<DateTimeOffset?>("LockoutEnd");
@@ -195,7 +191,7 @@ namespace TicketReservation.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Journey");
+                    b.ToTable("Journeys");
                 });
 
             modelBuilder.Entity("TicketReservation.Models.Seat", b =>
@@ -217,7 +213,7 @@ namespace TicketReservation.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Seat");
+                    b.ToTable("Seats");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRoleClaim<string>", b =>
