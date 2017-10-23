@@ -21,16 +21,12 @@ namespace TicketReservation.Controllers
         {
             return View(await _context.Journey.ToListAsync());
         }
-        /*
+
         public async Task<IActionResult> Index(int? journeyId)
         {
             var journeyToUpdate = _context.Journey.SingleOrDefaultAsync(j => j.Id == journeyId); ;
 
-           
-
-            
-
             return View(await _context.Journey.ToListAsync());
-        } */
+        }
     }
 }

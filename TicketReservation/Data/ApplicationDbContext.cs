@@ -21,10 +21,6 @@ namespace TicketReservation.Data
 
         public DbSet<Journey> Journey { get; set; }
 
-        public DbSet<ApplicationUser> Users { get; set; }
-        public DbSet<Seat> Seat { get; set; }
-        public DbSet<Journey> Journey { get; set; }
-
         protected override void OnModelCreating(ModelBuilder builder)
         {
             foreach (var relationship in builder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))

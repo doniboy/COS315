@@ -7,25 +7,31 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using TicketReservation.Data;
 using TicketReservation.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace TicketReservation.Controllers
 {
     public class JourneysController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public JourneysController(ApplicationDbContext context)
+        public JourneysController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
-            _context = context;    
+            _context = context;
+            _userManager = userManager;
         }
 
         // GET: Journeys
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Journey.ToListAsync());
         }
 
         // GET: Journeys/Details/5
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -44,6 +50,7 @@ namespace TicketReservation.Controllers
         }
 
         // GET: Journeys/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
@@ -52,6 +59,7 @@ namespace TicketReservation.Controllers
         // POST: Journeys/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,From,To,Date,IsActive,TotalSeatsLeftDirection,TotalSeatsRightDirection")] Journey journey)
@@ -66,6 +74,7 @@ namespace TicketReservation.Controllers
         }
 
         // GET: Journeys/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -84,6 +93,7 @@ namespace TicketReservation.Controllers
         // POST: Journeys/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,From,To,Date,IsActive,TotalSeatsLeftDirection,TotalSeatsRightDirection")] Journey journey)
@@ -117,6 +127,7 @@ namespace TicketReservation.Controllers
         }
 
         // GET: Journeys/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -135,6 +146,7 @@ namespace TicketReservation.Controllers
         }
 
         // POST: Journeys/Delete/5
+        [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -143,6 +155,26 @@ namespace TicketReservation.Controllers
             _context.Journey.Remove(journey);
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
+        }
+
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> Buy(int id)
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            var journey = await _context.Journey.SingleOrDefaultAsync(m => m.Id == id);
+
+            var seat = new Seat { JourneyId = id, Direction = "Left", Number = "SomeNumber", UserId = user.Id };
+
+            _context.Add(seat);
+
+            journey.TotalSeatsLeftDirection -= 1;
+
+            _context.Update(journey);
+
+            await _context.SaveChangesAsync();
+
+            return View(seat);
         }
 
         private bool JourneyExists(int id)
