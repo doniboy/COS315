@@ -1,0 +1,40 @@
+﻿@model IEnumerable<TicketReservation.Models.Seat>
+@{
+    ViewData["Title"] = "Seats";
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Direction
+            </th>
+            <th>
+                Seat Number
+            </th>
+            <th>
+                Price
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Direction)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Number)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    <a asp-action="ReserveSeat" asp-route-id="@item.Id">Buy / Reserve</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,48 @@
+@model IEnumerable<TicketReservation.Models.Seat>
+
+@{
+    ViewData["Title"] = "UserSeats";
+}
+
+<h2>UserSeats</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Direction)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Number)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Price)
+                </th>
+                <th>
+                    Journey
+                </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Direction)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Number)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Journey)
+            </td>
+            <td>
+                @Html.ActionLink("Cancel", "CancelSeat", new { item.Id })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

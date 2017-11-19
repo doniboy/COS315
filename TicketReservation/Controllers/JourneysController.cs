@@ -41,6 +41,14 @@ namespace TicketReservation.Controllers
 
             var journey = await _context.Journey
                 .SingleOrDefaultAsync(m => m.Id == id);
+
+            var id1 = id ?? default(int);
+            var seatsLeft = _context.Seat.Where(x => x.JourneyId == id1 && x.Direction == "Left");
+            var seatsRight = _context.Seat.Where(x => x.JourneyId == id1 && x.Direction == "Right");
+
+            journey.TotalSeatsLeftDirection = seatsLeft.Count();
+            journey.TotalSeatsRightDirection = seatsRight.Count();
+
             if (journey == null)
             {
                 return NotFound();
@@ -175,6 +183,35 @@ namespace TicketReservation.Controllers
             await _context.SaveChangesAsync();
 
             return View(seat);
+        }
+
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> Seats(int id)
+        {
+            var seats = _context.Seat.Where(x => x.JourneyId == id && x.UserId == null).ToList();
+            return View(seats);
+        }
+
+        [Authorize(Roles = "User")]
+        public async Task<IActionResult> ReserveSeat(int id)
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            var seat = _context.Seat.SingleOrDefault(m => m.Id == id);
+
+            if ((double)user.Wallet < seat.Price)
+            {
+                return BadRequest("Payment Denied");
+            }
+
+            seat.UserId = user.Id;
+            user.Wallet -= (decimal)seat.Price;
+
+            _context.Update(seat);
+            _context.Update(user);
+
+            await _context.SaveChangesAsync();
+
+            return View();
         }
 
         private bool JourneyExists(int id)

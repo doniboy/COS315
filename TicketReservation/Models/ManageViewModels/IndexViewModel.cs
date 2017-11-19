@@ -17,5 +17,8 @@ namespace TicketReservation.Models.ManageViewModels
         public bool TwoFactor { get; set; }
 
         public bool BrowserRemembered { get; set; }
+
+        public List<Seat> UserSeats { get; set; }
+        public decimal Wallet { get; set; }
     }
 }

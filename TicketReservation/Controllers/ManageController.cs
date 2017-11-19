@@ -10,6 +10,7 @@ using Microsoft.Extensions.Options;
 using TicketReservation.Models;
 using TicketReservation.Models.ManageViewModels;
 using TicketReservation.Services;
+using TicketReservation.Models.AccountViewModels;
 
 namespace TicketReservation.Controllers
 {
@@ -22,6 +23,7 @@ namespace TicketReservation.Controllers
         private readonly IEmailSender _emailSender;
         private readonly ISmsSender _smsSender;
         private readonly ILogger _logger;
+        private readonly Data.ApplicationDbContext _context;
 
         public ManageController(
           UserManager<ApplicationUser> userManager,
@@ -29,7 +31,8 @@ namespace TicketReservation.Controllers
           IOptions<IdentityCookieOptions> identityCookieOptions,
           IEmailSender emailSender,
           ISmsSender smsSender,
-          ILoggerFactory loggerFactory)
+          ILoggerFactory loggerFactory,
+          Data.ApplicationDbContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -37,6 +40,7 @@ namespace TicketReservation.Controllers
             _emailSender = emailSender;
             _smsSender = smsSender;
             _logger = loggerFactory.CreateLogger<ManageController>();
+            _context = context;
         }
 
         //
@@ -64,7 +68,9 @@ namespace TicketReservation.Controllers
                 PhoneNumber = await _userManager.GetPhoneNumberAsync(user),
                 TwoFactor = await _userManager.GetTwoFactorEnabledAsync(user),
                 Logins = await _userManager.GetLoginsAsync(user),
-                BrowserRemembered = await _signInManager.IsTwoFactorClientRememberedAsync(user)
+                BrowserRemembered = await _signInManager.IsTwoFactorClientRememberedAsync(user),
+                UserSeats = _context.Seat.Where(x => x.UserId == user.Id).ToList(),
+                Wallet = user.Wallet
             };
             return View(model);
         }
@@ -339,6 +345,56 @@ namespace TicketReservation.Controllers
                 await HttpContext.Authentication.SignOutAsync(_externalCookieScheme);
             }
             return RedirectToAction(nameof(ManageLogins), new { Message = message });
+        }
+
+        public ActionResult DepositMoney()
+        {
+            return View(new DepositMoneyViewModel());
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DepositMoney(DepositMoneyViewModel model)
+        {
+            if (model.CreditCardNumber == "this is not valid")
+            {
+                return BadRequest("Not enough money");
+            }
+
+            if (model.CreditCardVerificationCode == "wrong code")
+            {
+                return BadRequest("Please check verification code");
+            }
+
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            user.Wallet += model.AmountToDeposit;
+            _context.Update(user);
+            _context.SaveChanges();
+
+            return View();
+        }
+
+        public async Task<IActionResult> UserSeats()
+        {
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+            var seats = _context.Seat.Where(x => x.UserId == user.Id);
+            return View(seats);
+        }
+
+        public async Task<IActionResult> CancelSeat(int id)
+        {
+            var seat = _context.Seat.SingleOrDefault(m => m.Id == id);
+
+            var user = await _userManager.GetUserAsync(HttpContext.User);
+
+            user.Wallet += (decimal)(0.5 * seat.Price);
+
+            seat.UserId = null;
+
+            _context.Update(seat);
+            _context.Update(user);
+            _context.SaveChanges();
+            return View();
         }
 
         #region Helpers

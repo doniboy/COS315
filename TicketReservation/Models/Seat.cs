@@ -17,7 +17,7 @@ namespace TicketReservation.Models
         public string Number { get; set; }
 
         public string UserId { get; set; }
-
+        public double Price { get; set; }
         [ForeignKey(nameof(UserId))]
         public virtual ApplicationUser User { get; set; }
 
@@ -25,5 +25,6 @@ namespace TicketReservation.Models
 
         [ForeignKey(nameof(JourneyId))]
         public virtual Journey Journey { get; set; }
+
     }
 }
